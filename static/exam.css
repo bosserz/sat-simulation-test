@@ -1,0 +1,127 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px; /* Adjust as needed */
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* .question-number span {
+    border: 10px 10px;
+    background-color: #002a5c;
+
+} */
+
+.section-title {
+    font-size: 20px;
+}
+
+.timer {
+    font-size: 18px;
+}
+
+.btn-hide {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.question-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    width: 45%; /* Adjust as needed */
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px;
+}
+
+
+.question {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.answers {
+    margin-top: 20px;
+}
+
+.btn-next, .btn-back {
+    /* margin-top: 10px; */
+    margin: 10px 5px 0px 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-back {
+    background-color: #ccc !important;
+    color: black !important;
+}
+
+.question-number {
+    font-weight: 600;
+}
+
+.control-button {
+    display: flex;
+}
+
+.question-img {
+    max-width: 100%;
+}
+
+/* Add more styles as necessary */
+form input {
+    margin-top: 1.15rem;
+    margin-bottom: 1.15rem;
+}
+
+.choice-label {
+    display: block;
+    width: 80%;
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 0.1rem; /* Add some spacing between buttons */
+}
+
+input[type="radio"]:checked + label {
+    background-color: #002a5c;
+    color: white;
+}
+
+/* Hide the radio buttons */
+input[type="radio"] {
+    display: none;
+}
+
+.link {
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #002a5c;
+    font-weight: 500;
+    text-decoration: none;
+}
+

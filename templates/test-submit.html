@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Digital SAT - Test Submit</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <div class="header text-center">
+        <h1>Do you want to submit the test?</h1>
+    </div>
+    <div class="submit-form">
+        <form action="/next" method="post">
+            <button type="submit" class="btn-back">Back to test</button>
+            <input type="hidden" name="question_id" value="40">
+        </form>
+        <form action="/submit-success" method="post">
+            <button type="submit" class="btn-back">Submit</button>
+            <input type="hidden" name="submission" value="submission">
+        </form>
+        <!--  <div class="help-links">
+        <a href="/update-account">Update account</a>
+        <a href="/reset-password">Reset password</a>
+        </div> -->
+    </div>
+</div>
+{% endblock %}

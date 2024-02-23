@@ -1,0 +1,93 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Quicksand', sans-serif;
+  background-color: #f0f0f7;
+}
+
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  text-align: center;
+  color: #000080; /* Adjust the color to match the blue in the image */
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.login-form h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.role-buttons button {
+  background-color: #e0e0e0; /* Adjust the color to match the buttons in the image */
+  border: none;
+  padding: 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.remember-me {
+  margin-bottom: 20px;
+}
+
+.remember-me label {
+  margin-left: 5px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #000080; /* Adjust the color to match the blue in the image */
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.help-links {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.help-links a {
+  text-decoration: none;
+  color: #000080; /* Adjust the color to match the blue in the image */
+  margin-right: 10px;
+}
+
+/* You may need to add media queries to ensure responsiveness */
+.logo {
+  width: 300px;
+}
+
+.text-center {
+  text-align: center;
+}
