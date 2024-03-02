@@ -3,17 +3,19 @@
 {% block head %}
 <title>Digital SAT Mock Test</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
 
 
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <h1>Hi {{ current_user.username }}</h1>
+    <h1>User: {{ current_user.username }}</h1>
     <header>
         <div>Time Left: <span id="timer"></span></div>
         <div class="section-title">
-            
+            <h2 id="module"></h2>
         </div>
         <!-- <button class="btn-hide">Hide</button> -->
     </header>
@@ -51,7 +53,7 @@
                         <br>
                     </div>
                     <div id='fill-in' style="display:none;">
-                        <input type="text" name="answer" id='fill-in-answer' required>
+                        <input type="text" name="answer" id='fill-in-answer' autocomplete="off" required>
                     </div>
                         
                 </form>
@@ -72,6 +74,7 @@
     <footer>
         <!-- Add any footer if needed -->
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         let questions = {{ questions|tojson }};
         let currentQuestionIndex = 0;
@@ -90,79 +93,14 @@
             document.getElementById('answer_choice_b').innerHTML = questions[index].answer_b;
             document.getElementById('answer_choice_c').innerHTML = questions[index].answer_c;
             document.getElementById('answer_choice_d').innerHTML = questions[index].answer_d;
+            document.getElementById('module').innerHTML = questions[index].module;
 
-        
-
-        // };
-
-            // new version
-            // let question = questions[index];
-            // let questionContainer = document.getElementById('question-container');
-            // let questionElement = document.createElement('div');
-            // questionElement.classList.add('question');
-            // questionElement.id = 'question-' + (index + 1);
-
-            // let questionText = document.createElement('p');
-            // questionText.textContent = question.question_query;
-            // questionElement.appendChild(questionText);
-
-            // if (question.type === 'choices') {
-            //     let choices = ['a', 'b', 'c', 'd'];
-            //     choices.forEach(choice => {
-            //         let choiceInput = document.createElement('input');
-            //         choiceInput.type = 'radio';
-            //         choiceInput.id = 'answer_' + choice;
-            //         choiceInput.name = 'answer';
-            //         choiceInput.value = 'answer_' + choice;
-            //         // if (userAnswers['q' + (index + 1)] === 'answer_' + choice) {
-            //         //     choiceInput.checked = true; // Select the user's answer
-            //         // }
-
-            //         let choiceLabel = document.createElement('label');
-            //         choiceLabel.htmlFor = 'answer_' + choice;
-            //         choiceLabel.textContent = question['answer_' + choice];
-            //         choiceLabel.className = 'choice-label';
-
-            //         let choiceContainer = document.createElement('div');
-            //         // let choiceContainer = document.getElementById("answer-form");
-            //         choiceContainer.appendChild(choiceInput);
-            //         choiceContainer.appendChild(choiceLabel);
-            //         choiceContainer.appendChild(document.createElement('br'));
-
-            //         questionElement.appendChild(choiceContainer);
-            //     });
-            // } else if (question.type === 'blank') {
-            //     let blankInput = document.createElement('input');
-            //     blankInput.type = 'text';
-            //     blankInput.id = 'q' + (index + 1) + '-answer';
-            //     blankInput.name = 'answer';
-            //     blankInput.placeholder = 'Your answer';
-
-            //     if (userAnswers[index]) {
-            //         blankInput.value = userAnswers['q' + (index + 1)] || ''; // Populate with user's answer
-            //     }
-
-            //     blankInput.addEventListener('input', function() {
-            //         userAnswers[index] = this.value;
-            //     });
-                
-
-            //     questionElement.appendChild(blankInput);
-
-            //     // Hide the radio button inputs and labels
-            //     document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            //         radio.style.display = 'none';
-            //     });
-            //     document.querySelectorAll('label.choice-label').forEach(label => {
-            //         label.style.display = 'none';
-            //     });
-        // }
-
-        // questionContainer.innerHTML = '';
-        // questionContainer.appendChild(questionElement);
+            typesetEquations();
         
 
         }
+
+        
         
     
         function nextQuestion() {
@@ -171,6 +109,7 @@
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.checked = false;
                 });
+                document.getElementById("fill-in-answer").value = "";
                 currentQuestionIndex++;
                 showQuestion(currentQuestionIndex);
                 document.getElementById('submit-btn').style.display = 'none';
@@ -301,6 +240,10 @@
         
     
         document.getElementById('submit-module-form').action = "/submit-module/" + questions[currentQuestionIndex].module;
+
+        function typesetEquations() {
+            MathJax.typeset();
+        }
     
     </script>
 </div>

@@ -80,8 +80,9 @@ def login():
         user = UserLogin.query.filter_by(username=username, password=password).first()
 
         if not user:
-            flash('Please contact admin to support.')
-            return render_template('login.html')
+            warning_message = "Please contact admin for supports."
+            # flash('Please contact admin to support.')
+            return render_template('login.html', warning=warning_message)
 
         if (user.is_authenticated) :
             login_user(user)
@@ -110,35 +111,6 @@ def login():
 def test_info():
     return render_template('test-info.html', username=current_user)
 
-@app.route('/exam', methods=['GET', 'POST'])
-@login_required
-def exam():
-    questions = Question.query.order_by(Question.question_id).first()
-    remaining_seconds = 32 * 60
-    return render_template('exam.html', current_question=questions, remaining_time=remaining_seconds)
-
-@app.route('/next', methods=['GET', 'POST'])
-def next_question():
-    question_id = int(request.form['question_id'])
-    questions = Question.query.get_or_404(question_id)
-    if questions.question_id in [1, 11, 21, 31]:
-        remaining_seconds = 32*60
-    else:
-        data = request.json
-        # minutes = data.get('minutes')
-        # seconds = data.get('seconds')
-        # remaining_seconds = data.get('remaining_time')
-        remaining_seconds = redirect('/update-timer')
-    # next_question = Question.query.filter(Question.question_id > question_id).first()
-    if question_id == 40:
-        return render_template('test-submit.html')
-    else:
-        return render_template('exam.html', current_question=questions, remaining_time=remaining_seconds)
-
-    # if next_question:
-    #     return render_template('exam.html', current_question=next_question)
-    # else:
-    #     return "End of test"  # Or redirect to a different page
 
 @app.route('/update-timer', methods=['POST'])
 def update_timer():
@@ -159,31 +131,13 @@ def submit():
     # session.pop("user", None)
     return render_template('submission-success.html')
 
-@app.route('/test/<int:question_id>', methods=['GET', 'POST'])
-@login_required
-def test(question_id):
-    question = Question.query.get_or_404(question_id)
-    if request.method == 'POST':
-        # Handle the submitted answer
-        answer = request.form['answer']
-        responses[question_id] = answer
-        # Redirect to the next question
-        next_question_id = question_id + 1
-        if next_question_id <= 10:  # Assuming 10 questions in total
-            return redirect(url_for('test', question_id=next_question_id))
-        else:
-            # End of the test, process the responses
-            process_responses(responses)
-            return "End of the test. Responses collected."
-    return render_template('test.html', question=question, answer=responses.get(question_id, ''))
-
 @app.route('/new-exam/<module>', methods=['GET', 'POST'])
 @login_required
 def new_exam(module):
     if current_user is None:
         return redirect(url_for('login'))
     else:
-        questions = Question.query.filter_by(module=module).all()
+        questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
         questions_list = [{"question_id": q.question_id 
                             , "question_header": q.question_header
                             , "question_query": q.question_query
@@ -197,7 +151,7 @@ def new_exam(module):
                             , "module": q.module
                             , "type": q.question_type
                             } for q in questions]
-        module = 'verbal-1'
+        # module = 'verbal-1'
         time_duration = get_time_duration(module)
         return render_template('new-exam.html', questions=questions_list, time_duration=time_duration, module=module,
         username=current_user)
@@ -243,13 +197,6 @@ def submit_module(module):
         return render_template('math2-module-submission.html')
 
 
-@app.route('/exam2')
-def exam2():
-
-    questions = Question.query.order_by(Question.question_id).all()
-    remaining_seconds = 32 * 60
-    return render_template('exam2.html', current_question=questions, remaining_time=remaining_seconds)
-
 def get_time_duration(module):
 
     if 'math' in module:
@@ -270,5 +217,5 @@ def process_responses(responses):
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-    sess.init_app(app)
+    # sess.init_app(app)
     app.run(debug=True)
