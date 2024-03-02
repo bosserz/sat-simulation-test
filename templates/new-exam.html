@@ -11,7 +11,7 @@
 
 {% block body %}
 <div class="container">
-    <h1>User: {{ current_user.username }}</h1>
+    <h2>User: {{ current_user.username }}</h2>
     <header>
         <div>Time Left: <span id="timer"></span></div>
         <div class="section-title">
@@ -93,7 +93,7 @@
             document.getElementById('answer_choice_b').innerHTML = questions[index].answer_b;
             document.getElementById('answer_choice_c').innerHTML = questions[index].answer_c;
             document.getElementById('answer_choice_d').innerHTML = questions[index].answer_d;
-            document.getElementById('module').innerHTML = questions[index].module;
+            document.getElementById('module').innerHTML = "Module: " + questions[index].module;
 
             typesetEquations();
         
@@ -109,6 +109,7 @@
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.checked = false;
                 });
+                
                 document.getElementById("fill-in-answer").value = "";
                 currentQuestionIndex++;
                 showQuestion(currentQuestionIndex);
@@ -120,6 +121,7 @@
                 } else {
                     document.getElementById('answer-choices').style.display = 'block';
                     document.getElementById('fill-in').style.display = 'none';
+                    
                 }
             } else {
                 document.getElementById('submit-btn').style.display = 'block'; // Show the submit button
@@ -133,6 +135,7 @@
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = false;
             });
+                
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
                 showQuestion(currentQuestionIndex);

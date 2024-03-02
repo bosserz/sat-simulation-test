@@ -31,6 +31,7 @@ class UserLogin(db.Model):
 class Question(db.Model):
     __tablename__ = 'sat_questions'
     question_id = db.Column(db.Integer, primary_key=True)
+    question_no = db.Column(db.Integer, nullable=False)
     section = db.Column(db.Integer, nullable=False)
     module = db.Column(db.Integer, nullable=False)
     question_group = db.Column(db.String(10), nullable=False)
@@ -138,7 +139,8 @@ def new_exam(module):
         return redirect(url_for('login'))
     else:
         questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
-        questions_list = [{"question_id": q.question_id 
+        questions_list = [{"question_id": q.question_id
+                            , "question_no": q.question_no
                             , "question_header": q.question_header
                             , "question_query": q.question_query
                             , "question_img": q.question_img
