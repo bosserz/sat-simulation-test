@@ -2,14 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
-from flask_session import Session
 
 
 
 app = Flask(__name__)
-# SESSION_TYPE = "memcached"
 app.secret_key = 'intsightedu'
-sess = Session()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sat_simulation_test_user:b0vlxEmUfEgoQ0jtrFdCtmTaZU5rE8Kl@dpg-cn822qq1hbls73d8aq10-a.singapore-postgres.render.com/sat_simulation_test'
 db = SQLAlchemy(app)
@@ -85,7 +82,7 @@ def login():
         if not user:
             flash('Please contact admin to support.')
             return render_template('login.html')
-            
+
         if (user.is_authenticated) :
             login_user(user)
             session["user"] = username
