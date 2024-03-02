@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Digital SAT Mock Test</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div>
+        <div id="info-header" class="text-center">
+            <img class="logo" src="{{ url_for('static', filename='assets/img/intsight-logo-horizontal.png') }}" alt="">
+            <h2 class="text-center">
+                Welcome {{ username.username }} to Digital SAT Mock Test
+            </h2>
+        </div>
+        <!-- <button class="btn-hide">Hide</button> -->
+    </div>
+    <div>
+
+        <div>
+            <p>
+                This test consists of 4 modules including 2 modules of Reading & Writing Test and 2 modules of Math Test.
+            </p>
+            <br>
+            <h4>
+                Reading & Writing
+            </h4>
+            <ul>
+                <li>Each module has 27 questions</li>
+                <li>32 minutes</li>
+                <li>2 unmarked questions</li>
+            </ul>
+            <h4>
+                Math
+            </h4>
+            <ul>
+                <li>Each module has 22 questions</li>
+                <li>37 minutes</li>
+                <li>2 unmarked questions</li>
+            </ul>
+        </div>
+        <div>
+            <h4>
+                To start the test please click on the below "Start" button.
+            </h4>
+            <p>
+                Wish everyone a good luck for your test!
+            </p>
+        </div>
+        <div>
+            <form action="/new-exam/verbal-1" method="post">
+                <button type="submit" class="btn-next">
+                    Start
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <!-- Add any footer if needed -->
+    </footer>
+</div>
+{% endblock %}

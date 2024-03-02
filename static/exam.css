@@ -25,6 +25,10 @@ header {
 
 } */
 
+#info-header {
+    border-bottom: 1px solid #ccc;
+}
+
 .section-title {
     font-size: 20px;
 }

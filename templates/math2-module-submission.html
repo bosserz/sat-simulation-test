@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Digital SAT - Mock Test</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <div class="header text-center">
+        <h1>Your answers for this module are submitted.</h1>
+        <h2>To end your test please click submit below.</h2>
+    </div>
+    <form action="/submit-success" method='post'>
+        <button type="submit" class="btn-next">Submit</button>
+    </form>
+</div>
+{% endblock %}
