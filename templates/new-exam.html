@@ -28,7 +28,7 @@
         
         
         <div class="column">
-            <span id="question_id"></span>
+            <span id="question_no"></span>
             <div id=question-container>
                 
                 <p id="question"></p>
@@ -86,6 +86,7 @@
 
             
             document.getElementById('question_id').innerHTML = questions[index].question_id;
+            document.getElementById('question_no').innerHTML = questions[index].question_no;
             document.getElementById('question_header').innerHTML = questions[index].question_header;
             document.getElementById('question').innerHTML = questions[index].question_query;
             document.getElementById('question_img').src = questions[index].question_img;
