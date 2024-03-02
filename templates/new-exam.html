@@ -71,6 +71,11 @@
             
         </div>
         
+    </div>
+    <br>    
+    <div id="desmos" style="display: none;">
+        <a href="https://www.desmos.com/calculator" class="link desmos-cal" target="_blank">Graphical Calculator</a>
+    </div>
     <footer>
         <!-- Add any footer if needed -->
     </footer>
@@ -225,7 +230,9 @@
             // }
         }
 
-        
+        if (questions[currentQuestionIndex].category == 'sat-math') {
+            document.getElementById('desmos').style.display = 'block';
+        }
     
         // timer
         let timeLimit = {{ time_duration }}; // Time limit in seconds
@@ -255,5 +262,5 @@
         }
     
     </script>
-</div>
+
 {% endblock %}

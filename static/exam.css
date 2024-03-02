@@ -131,3 +131,7 @@ input[type="radio"] {
     text-decoration: none;
 }
 
+.desmos-cal {
+    width: 70%;
+    margin: auto;
+}

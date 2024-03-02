@@ -152,6 +152,7 @@ def new_exam(module):
                             , "section": q.section
                             , "module": q.module
                             , "type": q.question_type
+                            , "category": q.category
                             } for q in questions]
         # module = 'verbal-1'
         time_duration = get_time_duration(module)
