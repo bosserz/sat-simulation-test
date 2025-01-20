@@ -33,6 +33,94 @@ header {
     font-size: 20px;
 }
 
+/* Dropdown  */
+/* Container for the toggle button */
+.dropdown-container {
+    position: relative;
+    /* max-width: 800px; */
+    max-width: 100px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 10px 15px; */
+    /* cursor: pointer;
+    background-color: #f3f3f3;
+    border: 1px solid #ddd;
+    border-radius: 8px; */
+}
+
+.dropdown-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.dropdown-header button {
+    border: none;
+    background: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+/* Full-screen overlay for the dropdown content */
+.dropdown-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    z-index: 1000;
+}
+
+/* Dropdown content styled as a floating box */
+.dropdown-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+    z-index: 1001;
+}
+
+.dropdown-content p {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 10px 10px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.close-button:hover {
+    background-color: #ddd;
+}
+
+/* Dropdown end */
+
 .timer {
     font-size: 18px;
 }
@@ -40,6 +128,10 @@ header {
 .btn-hide {
     padding: 5px 10px;
     cursor: pointer;
+}
+
+.container {
+    box-shadow: none !important;
 }
 
 .question-container {
@@ -67,6 +159,33 @@ header {
     margin-top: 20px;
 }
 
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .button {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .button svg {
+    width: 20px;
+    height: 20px;
+  }
+
 .btn-next, .btn-back {
     /* margin-top: 10px; */
     margin: 10px 5px 0px 5px;
@@ -74,17 +193,23 @@ header {
     cursor: pointer;
 }
 
-.btn-back {
+/* .btn-back {
     background-color: #ccc !important;
     color: black !important;
-}
+} */
 
 .question-number {
     font-weight: 600;
 }
 
+.username {
+    margin-left: 3em;
+}
+
 .control-button {
     display: flex;
+    justify-content: flex-end;
+    margin-right: 3em;
 }
 
 .question-img {
@@ -99,11 +224,11 @@ form input {
 
 .choice-label {
     display: block;
-    width: 80%;
+    width: 100%;
     padding: 10px 20px;
     background-color: #f1f1f1;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     margin-bottom: 0.1rem; /* Add some spacing between buttons */
 }
@@ -134,4 +259,88 @@ input[type="radio"] {
 .desmos-cal {
     width: 70%;
     margin: auto;
+}
+
+.q-box-left {
+    border-right: black;
+}
+
+.q-box-right {
+    border-left: 1px black solid;
+}
+
+
+/* Overview Question */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+.overview-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+.overview-item.answered {
+    background-color: #d4edda;
+}
+.overview-item.unanswered {
+    background-color: #f8d7da;
+}
+.overview-item.for-review {
+    background-color: #fff3cd;
+}
+
+.legend {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.legend span {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+.legend .answered {
+    background-color: #d4edda; /* Green for answered */
+}
+.legend .unanswered {
+    background-color: #f8d7da; /* Red for unanswered */
+}
+.legend .for-review {
+    background-color: #fff3cd; /* Yellow for review */
+}
+
+
+
+.mark-for-review.active svg {
+    color: #f5c518; /* Yellow fill */
+}
+
+.mark-for-review:hover {
+    color: #555; /* Slightly darker on hover */
 }
