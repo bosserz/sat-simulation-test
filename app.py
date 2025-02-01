@@ -137,27 +137,40 @@ def submit():
 def new_exam(module):
     if current_user is None:
         return redirect(url_for('login'))
-    else:
-        questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
-        questions_list = [{"question_id": q.question_id
-                            , "question_no": q.question_no
-                            , "question_header": q.question_header
-                            , "question_query": q.question_query
-                            , "question_img": q.question_img
-                            , "question_img_2": q.question_img_2
-                            , "answer_a": q.answer_a
-                            , "answer_b": q.answer_b
-                            , "answer_c": q.answer_c
-                            , "answer_d": q.answer_d
-                            , "section": q.section
-                            , "module": q.module
-                            , "type": q.question_type
-                            , "category": q.category
-                            } for q in questions]
-        # module = 'verbal-1'
-        time_duration = get_time_duration(module)
-        return render_template('new-exam.html', questions=questions_list, time_duration=time_duration, module=module,
-        username=current_user)
+    
+    # Save the start time and exam duration in the session if not already set
+    session_key = f"{module}_start_time"
+    duration_key = f"{module}_time_duration"
+    if not session.get(session_key):
+        session[session_key] = datetime.utcnow().isoformat()
+        session[duration_key] = get_time_duration(module)
+
+    # Compute the remaining time based on the stored start time
+    start_time = datetime.fromisoformat(session[session_key])
+    total_duration = session[duration_key]
+    elapsed = (datetime.utcnow() - start_time).total_seconds()
+    remaining_time = max(0, total_duration - elapsed)
+    
+    questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
+    questions_list = [{"question_id": q.question_id
+                        , "question_no": q.question_no
+                        , "question_header": q.question_header
+                        , "question_query": q.question_query
+                        , "question_img": q.question_img
+                        , "question_img_2": q.question_img_2
+                        , "answer_a": q.answer_a
+                        , "answer_b": q.answer_b
+                        , "answer_c": q.answer_c
+                        , "answer_d": q.answer_d
+                        , "section": q.section
+                        , "module": q.module
+                        , "type": q.question_type
+                        , "category": q.category
+                        } for q in questions]
+    # module = 'verbal-1'
+
+    return render_template('new-exam.html', questions=questions_list, time_duration=remaining_time, module=module,
+    username=current_user)
 
 @app.route('/save-answers', methods=['POST'])
 @login_required

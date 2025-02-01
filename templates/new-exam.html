@@ -50,6 +50,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232a2.5 2.5 0 113.536 3.536L7.06 20.474a8.5 8.5 0 11-3.536-3.536L15.232 5.232z" />
                     </svg>
                     <span>Highlights & Notes</span>
+                    <span><button class="toggle-button" id="toggleIframeButton">Show Calculator</button></span>
                 </button>
                 <button class="button">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,6 +70,13 @@
     <div class="question-container">
 
         <div class="col-sm-6">
+            <div class="iframe-container" id="iframeContainer">
+                <!-- <a href="https://www.desmos.com/calculator" class="link desmos-cal" target="_blank">Graphical Calculator</a> -->
+                <iframe 
+                    src="https://www.desmos.com/testing/quebec/graphing" 
+                    title="Desmos Graphing Calculator">
+                </iframe>
+            </div>
             <div class="container">
                 <p id="question_header"></p>
                 <img id="question_img" class="question-img" alt="">
@@ -164,9 +172,7 @@
     </div>
 </div>
     <br>    
-    <div id="desmos" style="display: none;">
-        <a href="https://www.desmos.com/calculator" class="link desmos-cal" target="_blank">Graphical Calculator</a>
-    </div>
+    
     <footer>
         <!-- Add any footer if needed -->
     </footer>
@@ -194,6 +200,21 @@
         });
 
         // Dropdown end
+
+        // Calculator
+        const iframeToggleButton = document.getElementById('toggleIframeButton');
+        const iframeContainer = document.getElementById('iframeContainer');
+
+        iframeToggleButton.addEventListener('click', () => {
+            if (iframeContainer.style.display === 'none' || iframeContainer.style.display === '') {
+                iframeContainer.style.display = 'block';
+                iframeToggleButton.textContent = 'Hide Calculator';
+            } else {
+                iframeContainer.style.display = 'none';
+                iframeToggleButton.textContent = 'Show Calculator';
+            }
+        });
+        // Calculator End
 
         let questions = {{ questions|tojson }};
         let currentQuestionIndex = 0;
@@ -367,9 +388,9 @@
             // }
         }
 
-        if (questions[currentQuestionIndex].category == 'sat-math') {
-            document.getElementById('desmos').style.display = 'block';
-        }
+        // if (questions[currentQuestionIndex].category == 'sat-math') {
+        //     document.getElementById('desmos').style.display = 'block';
+        // }
     
         // timer
         let timeLimit = {{ time_duration }}; // Time limit in seconds
@@ -379,15 +400,15 @@
         function updateTimer() {
             if (timeRemaining > 0) {
                 let minutes = Math.floor(timeRemaining / 60);
-                let seconds = timeRemaining % 60;
+                let seconds = Math.floor(timeRemaining % 60);
                 document.getElementById('timer').innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 timeRemaining--;
             } else {
                 clearInterval(timerInterval);
-                // submitAnswer();
+                // Optionally, automatically submit answers or alert the user when time runs out.
             }
         }
-    
+        
         timerInterval = setInterval(updateTimer, 1000);
 
         
