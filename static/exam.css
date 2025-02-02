@@ -3,6 +3,11 @@ body, html {
     padding: 0;
 }
 
+.btn-int {
+    background-color: #002a5c !important;
+    color: white;
+}
+
 .container {
     width: 100%;
     max-width: 800px; /* Adjust as needed */
@@ -343,4 +348,11 @@ input[type="radio"] {
 
 .mark-for-review:hover {
     color: #555; /* Slightly darker on hover */
+}
+
+
+.overview-button-container {
+    display: flex;
+    align-items: center;  /* Centers vertically */
+    justify-content: center; /* Optional: centers horizontally */
 }

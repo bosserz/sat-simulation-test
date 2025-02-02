@@ -1,0 +1,486 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Digital SAT Mock Test</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+
+
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-5">
+
+    <div class="row text-center">
+        <div class="col-sm-4">
+            <div class="section-title">
+                <p id="module"></p>
+                <p>Section <span id="section"></span>, Module <span id="module_num"></span>: <span id="section_name"></span></p>
+            </div>
+            <div class="dropdown-container">
+                <div class="dropdown-header">
+                    <button id="toggleButton" class="btn btn-light"><h3>Directions</h3></button>
+                </div>
+            </div>
+        
+            <!-- Dropdown overlay -->
+            <div class="dropdown-overlay" id="dropdownOverlay">
+                <div class="dropdown-content">
+                    <button class="close-button" id="closeButton">&times;</button>
+                    <p class="text-start">
+                        The questions in this section address a number of important reading and writing skills.
+                        Each question includes one or more passages, which may include a table or graph. Read each passage
+                        and question carefully, and then choose the best answer to the question based on the passage(s).
+                    </p>
+                    <p class="text-start">
+                        All questions in this section are multiple-choice with four answer choices. Each question has a single best answer.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div><span id="timer"></span></div>
+            <div>
+                <button id="toggleTimerButton">Hide Timer</button>
+            </div>
+        </div>
+        <div class="col-sm-4">
+
+        </div>
+    </div>
+        
+        
+        <!-- <button class="btn-hide">Hide</button> -->
+
+    <hr>
+
+    <div class="question-container">
+
+        <div class="col-sm-6">
+            <div class="container">
+                <p id="question_header"></p>
+                <img id="question_img" class="question-img" alt="">
+            </div>
+            
+        </div>
+        
+        
+        <div class="col-sm-6 q-box-right">
+            <div class="container">
+                <span id="question_no"></span>
+                <button onclick="markForReview()" class="btn btn-light mark-for-review" id="markReviewBtn">
+                    Mark for Review
+                </button>
+                <div id=question-container>
+                    
+                    <p id="question"></p>
+                </div>
+                <div class="answers">
+                    
+                    <!-- Radio buttons for answer choices -->
+                    <form action="" method="post" id="answer-form">
+
+                        <div id='answer-choices'>
+                            <input type="radio" id="answer_a" name="answer" value="answer_a" required>
+                            <label class="choice-label" for="answer_a" id="answer_choice_a"></label>
+                            <br>
+                            <input type="radio" id="answer_b" name="answer" value="answer_b">
+                            <label class="choice-label" for="answer_b" id="answer_choice_b"></label>
+                            <br>
+                            <input type="radio" id="answer_c" name="answer" value="answer_c">
+                            <label class="choice-label" for="answer_c" id="answer_choice_c"></label>
+                            <br>
+                            <input type="radio" id="answer_d" name="answer" value="answer_d">
+                            <label class="choice-label" for="answer_d" id="answer_choice_d"></label>
+                            <br>
+                        </div>
+                        <div id='fill-in' style="display:none;">
+                            <input type="text" name="answer" id='fill-in-answer' required>
+                        </div>
+                            
+                    </form>
+                </div>
+            </div>
+        
+        </div>
+    
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="username">
+                <p><b>{{ current_user.username }}</b><p></p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="question-guide text-center">
+                <!-- Add the button to open the overview modal -->
+                <div class="overview-button-container text-center">
+                    <button class="btn btn-outline-primary" id="overviewButton"><p>Question <span id="question_no_2"></span> of <span id="total_question"></span></p></button>
+                </div>
+
+                <!-- Modal for the question overview -->
+                <div class="modal-overlay" id="questionOverviewModal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="d-flex justify-content-around">
+                            <h5>Section <span id="section_summary"></span>, Module <span id="module_num_summary"></span>: <span id="section_name_summary"></span></h5>
+                            <span><button class="close-modal btn" id="closeOverviewButton">&times;</button></span>
+                        </div>
+                        <div class="legend">
+                            <span class="answered">Answered</span>
+                            <span class="unanswered">Unanswered</span>
+                            <span class="for-review">For Review</span>
+                        </div>
+                        <div id="overviewGrid" class="overview-grid"></div>
+                        <button class="btn btn-secondary" onclick="goToReviewPage()">Go to Review Page</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="control-button">
+                <button onclick="previousQuestion()" class="btn-back btn btn-int">Back</button>
+                <button onclick="nextQuestion()" class="btn-next btn btn-int" id="btn-next">Next</button>
+                <form id="submit-module-form" action="/submit-module/">
+                    <button id="submit-btn" class="btn-next" style="display: none;" onclick="submitAllAnswers()">Submit</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <br>    
+    
+    <footer>
+        <!-- Add any footer if needed -->
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+
+        // Dropdown
+        const toggleButton = document.getElementById('toggleButton');
+        const closeButton = document.getElementById('closeButton');
+        const dropdownOverlay = document.getElementById('dropdownOverlay');
+
+        toggleButton.addEventListener('click', () => {
+            dropdownOverlay.style.display = 'block'; // Show the overlay
+        });
+
+        closeButton.addEventListener('click', () => {
+            dropdownOverlay.style.display = 'none'; // Hide the overlay
+        });
+
+        // Optional: Close overlay when clicking outside the content
+        dropdownOverlay.addEventListener('click', (e) => {
+            if (e.target === dropdownOverlay) {
+                dropdownOverlay.style.display = 'none';
+            }
+        });
+
+        // Dropdown end
+
+
+        let questions = {{ questions|tojson }};
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+    
+        showQuestion(currentQuestionIndex);
+    
+        function showQuestion(index) {
+
+            const category = questions[index].category;
+
+            let section;
+            let sectionName;
+            if (category === "sat-verbal") {
+                section = 1;
+                sectionName = "Reading and Writing";
+            } else {
+                section = 2;
+                sectionName = "Math"
+            }
+
+            // document.getElementById('question_id').innerHTML = questions[index].question_id;
+            document.getElementById('question_no').innerHTML = questions[index].question_no;
+            document.getElementById('question_no_2').innerHTML = questions[index].question_no;
+            document.getElementById('question_header').innerHTML = questions[index].question_header;
+            document.getElementById('question').innerHTML = questions[index].question_query;
+            document.getElementById('question_img').src = questions[index].question_img;
+            document.getElementById('answer_choice_a').innerHTML = "(a) " + questions[index].answer_a;
+            document.getElementById('answer_choice_b').innerHTML = "(b) " + questions[index].answer_b;
+            document.getElementById('answer_choice_c').innerHTML = "(c) " + questions[index].answer_c;
+            document.getElementById('answer_choice_d').innerHTML = "(d) " + questions[index].answer_d;
+            const module_num = questions[index].section;
+            const total_question = questions.length;
+            document.getElementById('section').innerHTML = section;
+            document.getElementById('module_num').innerHTML = module_num;
+            document.getElementById('section_name').innerHTML = sectionName;
+            document.getElementById('section_summary').innerHTML = section;
+            document.getElementById('module_num_summary').innerHTML = module_num;
+            document.getElementById('section_name_summary').innerHTML = sectionName;
+            document.getElementById('total_question').innerHTML = total_question;
+            
+
+            if (questions[index]['answer']) {
+                if (questions[index]['type'] == 'choices') {
+                    document.getElementById(questions[index]['answer']).checked = true;
+                } else {
+                    document.getElementById('fill-in-answer').value = questions[index]['answer'];
+                }
+                
+            }
+
+            typesetEquations();
+            updateMarkForReviewButton();
+
+        }
+
+        function nextQuestion() {
+            
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                document.getElementById("fill-in-answer").value = "";
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+                document.getElementById('submit-btn').style.display = 'none';
+    
+                if (questions[currentQuestionIndex].type == 'blank') {
+                    document.getElementById('answer-choices').style.display = 'none';
+                    document.getElementById('fill-in').style.display = 'block';
+                } else {
+                    document.getElementById('answer-choices').style.display = 'block';
+                    document.getElementById('fill-in').style.display = 'none';
+                }
+
+            } else {
+                document.getElementById('submit-btn').style.display = 'block'; // Show the submit button
+                document.getElementById('btn-next').style.display = 'none';
+            }
+            submitAnswer(currentQuestionIndex);
+            
+        }
+    
+        function previousQuestion() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+                
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+                document.getElementById('btn-next').style.display = 'block';
+                if (questions[currentQuestionIndex].type == 'blank') {
+                    document.getElementById('answer-choices').style.display = 'none';
+                    document.getElementById('fill-in').style.display = 'block';
+                } else {
+                    document.getElementById('answer-choices').style.display = 'block';
+                    document.getElementById('fill-in').style.display = 'none';
+                }
+            }
+            submitAnswer(currentQuestionIndex);
+        }
+
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                submitAnswer(currentQuestionIndex)
+            });
+        });
+
+        document.querySelectorAll('input[type="text"]').forEach(text => {
+            text.addEventListener('change', function() {
+                submitAnswer(currentQuestionIndex)
+            });
+        });
+    
+        function submitAnswer(index) {
+            // Get the user's answer based on the question type
+            let question = questions[index];
+            let answer;
+            // if (document.querySelector('input[type="radio"]')) {
+            if (document.getElementById('answer-choices').style.display != 'none') {
+                answer = document.querySelector('input[name=answer]:checked').value;
+            } else {
+                // answer = document.querySelector('input[type="text"]').value;
+                answer = document.getElementById('fill-in-answer').value;
+            }
+
+            // Store the user's answer in the userAnswers object
+            userAnswers[questions[index].question_id] = answer;
+            questions[currentQuestionIndex]['answer'] = answer;
+        }
+
+        function submitAllAnswers() {
+            // Send an AJAX request to the Flask route to save userAnswers
+            fetch('/save-answers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userAnswers),
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Clear the userAnswers object after successfully saving to the database
+                    userAnswers = {};
+                    // Continue to the next question
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        showQuestion(currentQuestionIndex);
+                        document.getElementById('submit-btn').style.display = 'none'; // Hide the submit button
+                    } else {
+                        document.getElementById('submit-btn').style.display = 'block'; // Show the submit button
+                    }
+                } else {
+                    console.error('Failed to save answers to the database');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving answers:', error);
+            });
+        
+
+            // Continue to the next question
+            // if (currentQuestionIndex < questions.length - 1) {
+            //     currentQuestionIndex++;
+            //     showQuestion(currentQuestionIndex);
+            //     document.getElementById('submit-btn').style.display = 'none'; // Hide the submit button
+            // } else {
+            //     document.getElementById('submit-btn').style.display = 'block'; // Show the submit button
+            // }
+        }
+
+        // if (questions[currentQuestionIndex].category == 'sat-math') {
+        //     document.getElementById('desmos').style.display = 'block';
+        // }
+    
+        // timer
+        let timeLimit = {{ time_duration }}; // Time limit in seconds
+        let timerInterval;
+        let timeRemaining = timeLimit;
+    
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = Math.floor(timeRemaining % 60);
+                document.getElementById('timer').innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeRemaining--;
+            } else {
+                clearInterval(timerInterval);
+                // Optionally, automatically submit answers or alert the user when time runs out.
+            }
+        }
+        
+        timerInterval = setInterval(updateTimer, 1000);
+
+        // Select the timer element and the hide button
+        const timerElement = document.getElementById('timer');
+        const toggleTimerButton = document.getElementById('toggleTimerButton');
+
+        // Add a click event listener to the hide button
+        toggleTimerButton.addEventListener('click', () => {
+            // Check if the timer is currently hidden
+            if (timerElement.style.display === 'none') {
+                // If hidden, show the timer and update button text
+                timerElement.style.display = 'block';
+                toggleTimerButton.textContent = 'Hide Timer';
+            } else {
+                // If visible, hide the timer and update button text
+                timerElement.style.display = 'none';
+                toggleTimerButton.textContent = 'Show Timer';
+            }
+        });
+
+        
+    
+        document.getElementById('submit-module-form').action = "/submit-module/" + questions[currentQuestionIndex].module;
+
+        function typesetEquations() {
+            MathJax.typeset();
+        }
+
+        // Initialize review tracking for questions
+        questions.forEach((question) => {
+            question.reviewed = false; // Add a 'reviewed' flag to track the review status
+        });
+
+        // Function to mark/unmark a question for review
+        function markForReview() {
+            const question = questions[currentQuestionIndex];
+            question.reviewed = !question.reviewed; // Toggle the review status
+            updateMarkForReviewButton();
+            populateQuestionOverview(); // Update the overview modal to reflect changes
+        }
+
+        // Update "Mark for Review" button text based on status
+        function updateMarkForReviewButton() {
+            const question = questions[currentQuestionIndex];
+            const markReviewBtn = document.getElementById('markReviewBtn');
+            markReviewBtn.textContent = question.reviewed ? 'Unmark for Review' : 'Mark for Review';
+            if (question.reviewed) {
+                markReviewBtn.classList.remove('btn-light');
+                markReviewBtn.classList.add('btn-warning');
+            } else {
+                markReviewBtn.classList.remove('btn-warning');
+                markReviewBtn.classList.add('btn-light');
+            }
+        }
+
+        // Open and close modal
+        const overviewButton = document.getElementById('overviewButton');
+        const closeOverviewButton = document.getElementById('closeOverviewButton');
+        const questionOverviewModal = document.getElementById('questionOverviewModal');
+
+        overviewButton.addEventListener('click', () => {
+            populateQuestionOverview();
+            questionOverviewModal.style.display = 'flex';
+        });
+
+        closeOverviewButton.addEventListener('click', () => {
+            questionOverviewModal.style.display = 'none';
+        });
+
+        // Populate the question overview grid
+        // Update the overview modal to show "Mark for Review" status
+        function populateQuestionOverview() {
+            const overviewGrid = document.getElementById('overviewGrid');
+            overviewGrid.innerHTML = ''; // Clear previous overview
+
+            questions.forEach((question, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.classList.add('overview-item');
+
+                if (question.answer) {
+                    questionItem.classList.add('answered');
+                } else {
+                    questionItem.classList.add('unanswered');
+                }
+
+                if (question.reviewed) {
+                    questionItem.classList.add('for-review');
+                }
+
+                questionItem.textContent = question.question_no;
+                questionItem.addEventListener('click', () => {
+                    currentQuestionIndex = index;
+                    showQuestion(currentQuestionIndex);
+                    questionOverviewModal.style.display = 'none';
+                });
+
+                overviewGrid.appendChild(questionItem);
+            });
+        }
+
+        // Optional: Function to navigate to the review page
+        function goToReviewPage() {
+            window.location.href = '/review-page'; // Adjust the URL as needed
+        }
+    
+    </script>
+
+{% endblock %}

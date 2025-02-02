@@ -96,16 +96,6 @@ def login():
             flash('Please contact admin to support.')
     return render_template('login.html')
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-#         if users.get(email) == password:
-#             return redirect(url_for('home'))
-#         else:
-#             return 'Invalid username or password'
-#     return render_template('login.html')
 
 @app.route('/test-info')
 @login_required
@@ -132,9 +122,48 @@ def submit():
     # session.pop("user", None)
     return render_template('submission-success.html')
 
-@app.route('/new-exam/<module>', methods=['GET', 'POST'])
+# @app.route('/new-exam/<module>', methods=['GET', 'POST'])
+# @login_required
+# def new_exam(module):
+#     if current_user is None:
+#         return redirect(url_for('login'))
+    
+#     # Save the start time and exam duration in the session if not already set
+#     session_key = f"{module}_start_time"
+#     duration_key = f"{module}_time_duration"
+#     if not session.get(session_key):
+#         session[session_key] = datetime.utcnow().isoformat()
+#         session[duration_key] = get_time_duration(module)
+
+#     # Compute the remaining time based on the stored start time
+#     start_time = datetime.fromisoformat(session[session_key])
+#     total_duration = session[duration_key]
+#     elapsed = (datetime.utcnow() - start_time).total_seconds()
+#     remaining_time = max(0, total_duration - elapsed)
+    
+#     questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
+#     questions_list = [{"question_id": q.question_id
+#                         , "question_no": q.question_no
+#                         , "question_header": q.question_header
+#                         , "question_query": q.question_query
+#                         , "question_img": q.question_img
+#                         , "question_img_2": q.question_img_2
+#                         , "answer_a": q.answer_a
+#                         , "answer_b": q.answer_b
+#                         , "answer_c": q.answer_c
+#                         , "answer_d": q.answer_d
+#                         , "section": q.section
+#                         , "module": q.module
+#                         , "type": q.question_type
+#                         , "category": q.category
+#                         } for q in questions]
+
+#     return render_template('new-exam.html', questions=questions_list, time_duration=remaining_time, module=module,
+#     username=current_user)
+
+@app.route('/verbal/<module>', methods=['GET', 'POST'])
 @login_required
-def new_exam(module):
+def verbal(module):
     if current_user is None:
         return redirect(url_for('login'))
     
@@ -169,7 +198,47 @@ def new_exam(module):
                         } for q in questions]
     # module = 'verbal-1'
 
-    return render_template('new-exam.html', questions=questions_list, time_duration=remaining_time, module=module,
+    return render_template('verbal.html', questions=questions_list, time_duration=remaining_time, module=module,
+    username=current_user)
+
+@app.route('/math/<module>', methods=['GET', 'POST'])
+@login_required
+def math(module):
+    if current_user is None:
+        return redirect(url_for('login'))
+    
+    # Save the start time and exam duration in the session if not already set
+    session_key = f"{module}_start_time"
+    duration_key = f"{module}_time_duration"
+    if not session.get(session_key):
+        session[session_key] = datetime.utcnow().isoformat()
+        session[duration_key] = get_time_duration(module)
+
+    # Compute the remaining time based on the stored start time
+    start_time = datetime.fromisoformat(session[session_key])
+    total_duration = session[duration_key]
+    elapsed = (datetime.utcnow() - start_time).total_seconds()
+    remaining_time = max(0, total_duration - elapsed)
+    
+    questions = Question.query.order_by((Question.question_id)).filter_by(module=module).all()
+    questions_list = [{"question_id": q.question_id
+                        , "question_no": q.question_no
+                        , "question_header": q.question_header
+                        , "question_query": q.question_query
+                        , "question_img": q.question_img
+                        , "question_img_2": q.question_img_2
+                        , "answer_a": q.answer_a
+                        , "answer_b": q.answer_b
+                        , "answer_c": q.answer_c
+                        , "answer_d": q.answer_d
+                        , "section": q.section
+                        , "module": q.module
+                        , "type": q.question_type
+                        , "category": q.category
+                        } for q in questions]
+    # module = 'verbal-1'
+
+    return render_template('math.html', questions=questions_list, time_duration=remaining_time, module=module,
     username=current_user)
 
 @app.route('/save-answers', methods=['POST'])
@@ -211,6 +280,10 @@ def submit_module(module):
         return render_template('math1-module-submission.html')
     else:
         return render_template('math2-module-submission.html')
+    
+@app.route('/reference')
+def reference():
+    return render_template('reference.html')
 
 
 def get_time_duration(module):
