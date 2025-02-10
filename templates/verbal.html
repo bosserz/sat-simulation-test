@@ -240,6 +240,7 @@
 
         function nextQuestion() {
             
+            submitAnswer(currentQuestionIndex);
             if (currentQuestionIndex < questions.length - 1) {
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.checked = false;
@@ -262,11 +263,12 @@
                 document.getElementById('submit-btn').style.display = 'block'; // Show the submit button
                 document.getElementById('btn-next').style.display = 'none';
             }
-            submitAnswer(currentQuestionIndex);
+            
             
         }
     
         function previousQuestion() {
+            submitAnswer(currentQuestionIndex);
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = false;
             });
@@ -283,7 +285,7 @@
                     document.getElementById('fill-in').style.display = 'none';
                 }
             }
-            submitAnswer(currentQuestionIndex);
+            
         }
 
         document.querySelectorAll('input[type="radio"]').forEach(radio => {
@@ -332,7 +334,7 @@
                     if (timeRemaining == 0) {
                         document.getElementById('submit-module-form').submit();
                     }
-                    
+
                     if (currentQuestionIndex < questions.length - 1) {
                         currentQuestionIndex++;
                         showQuestion(currentQuestionIndex);
