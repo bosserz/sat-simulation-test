@@ -73,7 +73,7 @@ users = {'admin@gmail.com': '1234'}
 
 @app.route('/')
 def home():
-    return 'Welcome to the home page'
+    return render_template('index.html')
 
 @login_manager.user_loader
 def load_user(user_id):

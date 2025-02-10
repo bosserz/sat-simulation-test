@@ -4,6 +4,11 @@ body, html {
   font-family: 'Quicksand', sans-serif;
 }
 
+.btn-int {
+  background-color: #002a5c !important;
+  color: white;
+}
+
 
 .login-container {
   width: 100%;
