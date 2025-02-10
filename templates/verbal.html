@@ -329,6 +329,10 @@
                     // Clear the userAnswers object after successfully saving to the database
                     userAnswers = {};
                     // Continue to the next question
+                    if (timeRemaining == 0) {
+                        document.getElementById('submit-module-form').submit();
+                    }
+                    
                     if (currentQuestionIndex < questions.length - 1) {
                         currentQuestionIndex++;
                         showQuestion(currentQuestionIndex);
@@ -372,6 +376,7 @@
                 timeRemaining--;
             } else {
                 clearInterval(timerInterval);
+                submitAllAnswers();
                 // Optionally, automatically submit answers or alert the user when time runs out.
             }
         }
