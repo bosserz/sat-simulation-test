@@ -8,6 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'intsightedu'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_TYPE'] = "filesystem"
+app.config['SESSION_FILE_DIR'] = "./flask_session/"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sat_simulation_test_user:b0vlxEmUfEgoQ0jtrFdCtmTaZU5rE8Kl@dpg-cn822qq1hbls73d8aq10-a.singapore-postgres.render.com/sat_simulation_test'
 db = SQLAlchemy(app)
@@ -82,6 +85,7 @@ def load_user(user_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        session.clear()
         username = request.form['username']
         password = request.form['password']
 
@@ -133,6 +137,7 @@ responses = {}
 def submit():
     current_user.is_authenticated = False
     db.session.commit()
+    session.clear()
     # session.pop("user", None)
     return render_template('submission-success.html')
 
