@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
@@ -19,9 +20,15 @@ login_manager.login_view = 'login'
 
 class UserLogin(db.Model):
     __tablename__ = 'user_login'
+    # id = db.Column(db.Integer, primary_key=True)
+    # username = db.Column(db.String(50), unique=True, nullable=False)
+    # password = db.Column(db.String(255), nullable=False)
+    # is_active = db.Column(db.Boolean, default=True)
+    # is_authenticated = db.Column(db.Boolean, default=True)
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    password_hash = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     is_authenticated = db.Column(db.Boolean, default=True)
 
@@ -77,12 +84,19 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # test_key = request.form['test_key']
-        user = UserLogin.query.filter_by(username=username, password=password).first()
 
-        if not user:
-            warning_message = "Please contact admin for supports."
+        # user = UserLogin.query.filter_by(username=username, password=password).first()
+        # Find user by email
+        user = UserLogin.query.filter_by(username=username).first()
+
+        # if not user:
+            # warning_message = "Please contact admin for supports."
             # flash('Please contact admin to support.')
+            # return render_template('login.html', warning=warning_message)
+
+        # Validate user and check hashed password
+        if not user or not check_password_hash(user.password_hash, password):
+            warning_message = "Invalid email or password. Please try again or contact admin for support."
             return render_template('login.html', warning=warning_message)
 
         if (user.is_authenticated) :
@@ -295,6 +309,39 @@ def get_time_duration(module):
     else:
 
         return 32 * 60
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        name = request.form['name']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Validate passwords
+        if password != confirm_password:
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for('register'))
+
+        # Hash the password
+        hashed_password = generate_password_hash(password)
+
+        # Check if email already exists
+        existing_user = UserLogin.query.filter_by(username=username).first()
+        if existing_user:
+            flash("Email is already registered!", "warning")
+            return redirect(url_for('register'))
+
+        # Insert user into database
+        new_user = UserLogin(username=username, password_hash=hashed_password, name=name)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Registration successful!", "success")
+        return redirect(url_for('register'))  # Assuming you have a login page
+
+    return render_template('register.html')
+
 
 def process_responses(responses):
     for question_id, answer in responses.items():
