@@ -361,10 +361,16 @@
             radio.addEventListener('change', function() {
                 submitAnswer(currentQuestionIndex)
             });
+            radio.addEventListener('touchend', function() {
+                submitAnswer(currentQuestionIndex)
+            });
         });
 
         document.querySelectorAll('input[type="text"]').forEach(text => {
             text.addEventListener('change', function() {
+                submitAnswer(currentQuestionIndex)
+            });
+            text.addEventListener('touchend', function() {
                 submitAnswer(currentQuestionIndex)
             });
         });
