@@ -388,7 +388,10 @@
             let answer;
             // if (document.querySelector('input[type="radio"]')) {
             if (document.getElementById('answer-choices').style.display != 'none') {
-                answer = document.querySelector('input[name=answer]:checked').value;
+                if (document.querySelector('input[name=answer]:checked') != null) {
+                    answer = document.querySelector('input[name=answer]:checked').value;
+                }
+                
             } else {
                 // answer = document.querySelector('input[type="text"]').value;
                 answer = document.getElementById('fill-in-answer').value;
