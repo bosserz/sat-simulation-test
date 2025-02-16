@@ -240,7 +240,10 @@
 
         function nextQuestion() {
             
-            submitAnswer(currentQuestionIndex);
+            if (document.querySelector('input[name=answer]:checked') != null) {
+                    submitAnswer(currentQuestionIndex);
+                }
+            
             if (currentQuestionIndex < questions.length - 1) {
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.checked = false;
@@ -268,7 +271,10 @@
         }
     
         function previousQuestion() {
-            submitAnswer(currentQuestionIndex);
+            if (document.querySelector('input[name=answer]:checked') != null) {
+                    submitAnswer(currentQuestionIndex);
+                }
+            
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = false;
             });
@@ -313,10 +319,11 @@
             // if (document.querySelector('input[type="radio"]')) {
             if (document.getElementById('answer-choices').style.display != 'none') {
                 answer = document.querySelector('input[name=answer]:checked').value;
-            } else {
+            } 
+            // else {
                 // answer = document.querySelector('input[type="text"]').value;
-                answer = document.getElementById('fill-in-answer').value;
-            }
+            //     answer = document.getElementById('fill-in-answer').value;
+            // }
 
             // Store the user's answer in the userAnswers object
             userAnswers[questions[index].question_id] = answer;

@@ -309,7 +309,11 @@
 
         function nextQuestion() {
             
-            submitAnswer(currentQuestionIndex);
+            if ((document.querySelector('input[name=answer]:checked') != null) ||
+                (document.getElementById("fill-in-answer").value != null)) {
+                    submitAnswer(currentQuestionIndex);
+                }
+
             if (currentQuestionIndex < questions.length - 1) {
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.checked = false;
@@ -337,7 +341,11 @@
         }
     
         function previousQuestion() {
-            submitAnswer(currentQuestionIndex);
+            if ((document.querySelector('input[name=answer]:checked') != null) ||
+                (document.getElementById("fill-in-answer").value != null)) {
+                    submitAnswer(currentQuestionIndex);
+                }
+                
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.checked = false;
             });
