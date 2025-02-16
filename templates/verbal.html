@@ -144,9 +144,8 @@
             <div class="control-button">
                 <button onclick="previousQuestion()" class="btn-back btn btn-int">Back</button>
                 <button onclick="nextQuestion()" class="btn-next btn btn-int" id="btn-next">Next</button>
-                <form id="submit-module-form" action="/submit-module/">
-                    <button id="submit-btn" class="btn-next" style="display: none;" onclick="submitAllAnswers()">Submit</button>
-                </form>
+                <form id="submit-module-form" action="/submit-module/"></form>
+                <button id="submit-btn" class="btn-next" style="display: none;" onclick="submitAllAnswers()">Submit</button>
                 
             </div>
         </div>
@@ -332,6 +331,7 @@
 
         function submitAllAnswers() {
             // Send an AJAX request to the Flask route to save userAnswers
+
             fetch('/save-answers', {
                 method: 'POST',
                 headers: {
@@ -358,6 +358,8 @@
                 } else {
                     console.error('Failed to save answers to the database');
                 }
+
+                document.getElementById('submit-module-form').submit();
             })
             .catch(error => {
                 console.error('Error saving answers:', error);
