@@ -347,6 +347,12 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    
+    users = UserLogin.query.with_entities(UserLogin.username, UserLogin.name).all()
+    
+    return render_template('users.html', users=users)
 
 def process_responses(responses):
     for question_id, answer in responses.items():
