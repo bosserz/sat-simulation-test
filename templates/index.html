@@ -3,17 +3,35 @@
 {% block head %}
 <title>Digital SAT Mock Test</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='index_style.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <h1>Intsight Education</h1>
-    <h2>Digital SAT Simulation Test</h2>
-    <p>
-        แอพพลิเคชันนี้ถูกทำเพื่อให้น้องๆ ได้ทดลองสอบเสมือนจริง โดยที่ตัวแอพจะมีฟังก์ชันการทำงานเหมือนกันแอพข้อสอบจริง 
-        เพื่อให้น้องๆ คุ้นเคยกับการทำข้อสอบแบบ Computer Based Test 
-    </p>
-    <button class="btn-int">
-        <a href="{{ url_for('login') }}">Click to Login</a>
-    </button>
+    <div class="header">
+        <h1>Intsight Education</h1>
+        <h2>Digital SAT Simulation Test</h2>
+    </div>
+
+    <div class="intro">
+        <p>
+            แอพพลิเคชันนี้ถูกพัฒนาขึ้นเพื่อให้น้องๆ ได้ทดลองสอบเสมือนจริง โดยมีฟังก์ชันการทำงานเหมือนกับแอพข้อสอบจริง 
+            เพื่อให้คุ้นเคยกับการทำข้อสอบแบบ <strong>Computer-Based Test (CBT)</strong>.
+        </p>
+    </div>
+
+    <div class="features">
+        <h3>Key Features:</h3>
+        <ul>
+            <li>จำลองข้อสอบ Digital SAT เสมือนจริง</li>
+            <li>จับเวลาอัตโนมัติ เหมือนข้อสอบจริง</li>
+            <li>บันทึกผลคะแนนและทบทวนคำตอบได้</li>
+            <li>รองรับทุกอุปกรณ์ทั้งคอมพิวเตอร์และแท็บเล็ต</li>
+        </ul>
+    </div>
+
+    <div class="login-btn-container">
+        <a href="{{ url_for('login') }}" class="btn-int">Click to Login</a>
+    </div>
+</div>
 {% endblock %}
