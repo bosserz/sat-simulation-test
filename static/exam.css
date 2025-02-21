@@ -356,3 +356,8 @@ input[type="radio"] {
     align-items: center;  /* Centers vertically */
     justify-content: center; /* Optional: centers horizontally */
 }
+
+.reference-text {
+    background-color: #ddd;
+    padding: 5px 5px;
+}
