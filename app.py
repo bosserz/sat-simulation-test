@@ -57,6 +57,11 @@ class Question(db.Model):
     answer_d = db.Column(db.String(1000), nullable=True)
     category = db.Column(db.String(100), nullable=False)
 
+class CorrectAnswer(db.Model):
+    __tablename__ = 'correct_answers'
+    question_id = db.Column(db.Integer, primary_key=True)
+    correct_answer = db.Column(db.String(1000), nullable=True)
+
 class Answer(db.Model):
     __tablename__ = 'sat_answers'
     answer_id = db.Column(db.Integer, primary_key=True)
@@ -359,6 +364,132 @@ def process_responses(responses):
         # Process each response, e.g., save to a database
         # For demonstration, print the response to the console
         print(f"Question {question_id} - Answer: {answer}")
+
+@app.route('/results')
+@login_required
+def results():
+    username = current_user.username
+
+    # Fetch student's answers
+    student_answers = db.session.query(Answer.question_id, Answer.answer).filter_by(username=username).all()
+
+    # Fetch correct answers
+    correct_answers = db.session.query(CorrectAnswer.question_id, CorrectAnswer.correct_answer).all() 
+
+    # Fetch question_type
+    question_type = db.session.query(Question.question_id, Question.question_type).all()
+
+    # Convert to dictionaries for easy lookup
+    correct_dict = {q_id: ans for q_id, ans in correct_answers}
+    question_type_dict = {q_id: q_type for q_id, q_type in question_type}
+
+    def check_answer(answer, correct_answer, question_type):
+        if question_type == 'blank':
+            return float(answer) == float(correct_answer)
+        else:
+            return answer == correct_answer
+
+    # Count correct answers per section
+    section1_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and q_id <= 54)
+    section2_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and 55 <= q_id <= 98)
+
+    # Score interpolation ranges
+    section1_ranges = [(20, 200), (30, 400), (40, 500), (50, 600), (54, 700)]
+    section2_ranges = [(16, 200), (24, 400), (32, 500), (40, 600), (44, 700)]
+
+    # Function for linear interpolation
+    def interpolate_score(correct, ranges):
+            for i in range(len(ranges) - 1):
+                if ranges[i][0] <= correct <= ranges[i + 1][0]:
+                    x1, y1 = ranges[i]
+                    x2, y2 = ranges[i + 1]
+                    # Linear interpolation formula: y = y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
+                    return round(y1 + ((y2 - y1) / (x2 - x1)) * (correct - x1))
+            return 200 if correct < ranges[0][0] else 800  # Min and max limits
+
+    # Calculate section scores
+    section1_score = round(interpolate_score(section1_correct, section1_ranges))
+    section2_score = round(interpolate_score(section2_correct, section2_ranges))
+
+    # Compute total score
+    total_score = section1_score + section2_score
+
+    return render_template("results.html", username=username,
+                           section1_correct=section1_correct, section1_score=section1_score,
+                           section2_correct=section2_correct, section2_score=section2_score,
+                           total_score=total_score)
+
+@app.route('/all-results')
+def all_results():
+    # Fetch all unique usernames who have taken the test
+    users = db.session.query(Answer.username).filter(Answer.answer_id >= 1324).distinct().all()
+    user_scores = []
+
+    for user in users:
+        username = user.username
+
+        # Fetch student's answers
+        student_answers = db.session.query(Answer.question_id, Answer.answer).filter_by(username=username).all()
+
+        # Fetch correct answers
+        correct_answers = db.session.query(CorrectAnswer.question_id, CorrectAnswer.correct_answer).all()  # Assuming answer_a is correct
+
+        # Fetch question_type
+        question_type = db.session.query(Question.question_id, Question.question_type).all()
+
+        # Convert to dictionaries for easy lookup
+        correct_dict = {q_id: ans for q_id, ans in correct_answers}
+        question_type_dict = {q_id: q_type for q_id, q_type in question_type}
+
+        def check_answer(answer, correct_answer, question_type):
+            if answer is None or answer.strip() == "":
+                return False
+            if question_type == 'blank':
+                try:
+                    return eval(answer) == eval(correct_answer)
+                except (ValueError, SyntaxError, NameError):
+                    print(answer, correct_answer)
+                    return False
+            return answer == correct_answer
+
+        # Count correct answers per section
+        section1_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and q_id <= 54)
+        section2_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and 55 <= q_id <= 98)
+        # Score interpolation ranges
+        section1_ranges = [(20, 200), (30, 400), (40, 500), (50, 600), (54, 700)]
+        section2_ranges = [(16, 200), (24, 400), (32, 500), (40, 600), (44, 700)]
+
+        # Function for linear interpolation
+        def interpolate_score(correct, ranges):
+            for i in range(len(ranges) - 1):
+                if ranges[i][0] <= correct <= ranges[i + 1][0]:
+                    x1, y1 = ranges[i]
+                    x2, y2 = ranges[i + 1]
+                    # Linear interpolation formula: y = y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
+                    return round(y1 + ((y2 - y1) / (x2 - x1)) * (correct - x1))
+            return 200 if correct < ranges[0][0] else 800  # Min and max limits
+
+        # Calculate section scores
+        section1_score = round(interpolate_score(section1_correct, section1_ranges))
+        section2_score = round(interpolate_score(section2_correct, section2_ranges))
+
+        # Compute total score
+        total_score = section1_score + section2_score
+
+        # Append data for each user
+        user_scores.append({
+            "username": username,
+            "section1_correct": section1_correct,
+            "section1_score": section1_score,
+            "section2_correct": section2_correct,
+            "section2_score": section2_score,
+            "total_score": total_score
+        })
+
+    # Sort users by total score (highest first)
+    user_scores.sort(key=lambda x: x["total_score"], reverse=True)
+
+    return render_template("all-results.html", user_scores=user_scores)
 
 
 if __name__ == '__main__':

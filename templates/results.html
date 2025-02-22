@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Register - Digital SAT Mock Test</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='exam.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Results for {{ username }}</h1>
+    <table>
+        <tr>
+            <th>Section</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>Section: Reading & Writing</td>
+            <td>{{ section1_score }}</td>
+        </tr>
+        <tr>
+            <td>Section 2: Math</td>
+            <td>{{ section2_score }}</td>
+        </tr>
+        <tr>
+            <td><strong>Total Score</strong></td>
+            <td><strong>{{ total_score }}</strong></td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
