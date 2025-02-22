@@ -448,7 +448,6 @@ def all_results():
                 try:
                     return eval(answer) == eval(correct_answer)
                 except (ValueError, SyntaxError, NameError):
-                    print(answer, correct_answer)
                     return False
             return answer == correct_answer
 
@@ -456,8 +455,8 @@ def all_results():
         section1_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and q_id <= 54)
         section2_correct = sum(1 for q_id, ans in student_answers if q_id in correct_dict and check_answer(ans, correct_dict[q_id], question_type_dict[q_id]) and 55 <= q_id <= 98)
         # Score interpolation ranges
-        section1_ranges = [(20, 200), (30, 400), (40, 500), (50, 600), (54, 700)]
-        section2_ranges = [(16, 200), (24, 400), (32, 500), (40, 600), (44, 700)]
+        section1_ranges = [(0, 200), (20, 400), (30, 500), (40, 600), (50, 700), (54, 800)]
+        section2_ranges = [(0, 200), (16, 400), (24, 500), (32, 600), (40, 700), (44, 800)]
 
         # Function for linear interpolation
         def interpolate_score(correct, ranges):
@@ -466,7 +465,7 @@ def all_results():
                     x1, y1 = ranges[i]
                     x2, y2 = ranges[i + 1]
                     # Linear interpolation formula: y = y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
-                    return round(y1 + ((y2 - y1) / (x2 - x1)) * (correct - x1))
+                    return round(y1 + ((y2 - y1) / (x2 - x1)) * (correct - x1), -1)
             return 200 if correct < ranges[0][0] else 800  # Min and max limits
 
         # Calculate section scores
